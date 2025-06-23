@@ -17,25 +17,11 @@ pipeline {
             }
         }
 		
-        stage('DP Check') {
-            steps {
-                sh '''
-                    dependency-check.sh \
-                        --project "SafeNotes" \
-                        --scan "./" \
-                        --format "HTML" \
-                        --out "dependency-check-report" \
-                        --data /home/jenkins/dependency-check-data \
-                        --nvdApiKey 975ff1b7-36f6-46cf-80c1-4b9f294ff88e || true
-                '''
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'dependency-check-report/*.html', onlyIfSuccessful: false
-                }
-            }
-        }
-
+		stage('DP Check') {
+			steps {
+				dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
+			}
+		}
 
 
         stage('Test en múltiples versiones Node.js') {
