@@ -16,6 +16,13 @@ pipeline {
                 checkout scm // variable automática que representa la configuración del repositorio definida en la interfaz del job de Jenkins. clona el repositorio con base en esa configuración
             }
         }
+		
+		stage('DP Check') {
+			steps {
+				dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
+			}
+		}
+
 
         stage('Test en múltiples versiones Node.js') {
             parallel {
@@ -54,16 +61,15 @@ pipeline {
         stage('Análisis SonarQube') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    sh '''
+                    sh """
                         sonar-scanner \
                         -Dsonar.projectKey=realestate-api \
                         -Dsonar.projectName="RealEstate API" \
                         -Dsonar.sources=src \
                         -Dsonar.language=js \
                         -Dsonar.sourceEncoding=UTF-8 \
-                        -Dsonar.host.url=http://sonarqube:9000 \
-                        -Dsonar.login=$SONAR_TOKEN 
-                    '''
+                        -Dsonar.login=$SONAR_TOKEN
+                    """
                 }
             }
         }
