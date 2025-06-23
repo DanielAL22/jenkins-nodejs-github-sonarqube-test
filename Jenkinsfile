@@ -17,11 +17,17 @@ pipeline {
             }
         }
 		
-		stage('DP Check') {
-			steps {
-				dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
-			}
-		}
+        stage('DP Check') {
+            steps {
+                dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
+            }
+            post {
+                always {
+                    dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                    archiveArtifacts artifacts: '**/dependency-check-report.html', onlyIfSuccessful: true
+                }
+            }
+        }
 
 
         stage('Test en múltiples versiones Node.js') {
