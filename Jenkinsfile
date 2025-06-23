@@ -49,12 +49,19 @@ pipeline {
                         sh 'npm test'
                     }
                 }
+                stage('DP Check') {
+                    steps {
+                        dependencyCheck additionalArguments: '--format HTML', 
+                        odcInstallation: 'DP-Check'
+                    }
+		}
             }
         }
 
         stage('DP Check') {
 			steps {
-				dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
+				dependencyCheck additionalArguments: '--format HTML', 
+                odcInstallation: 'DP-Check'
 			}
 		}
 
