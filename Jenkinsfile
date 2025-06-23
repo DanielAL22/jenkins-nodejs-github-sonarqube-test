@@ -2,8 +2,12 @@ pipeline {
     agent any
 
     options {
-        // Permite abortar los builds anteriores si se lanza uno nuevo
-        disableConcurrentBuilds()
+        disableConcurrentBuilds() // Permite abortar los builds anteriores si se lanza uno nuevo
+    }
+
+    environment {
+        SONARQUBE_SERVER = 'Sonar 9.9.8'    // El nombre del servidor configurado en Jenkins > Configure System > SonarQube servers
+        SONAR_TOKEN = credentials('sonar-token-3')    // Token configurado en Jenkins Credentials
     }
 
     stages {
@@ -17,64 +21,62 @@ pipeline {
             parallel {
                 stage('Node 20') {
                     agent any
-                    tools {
-                        nodejs 'node20'  // Este nombre debe coincidir con el configurado en Jenkins
-                    }
+                    tools { nodejs 'node20' }
                     steps {
                         sh 'node -v'
                         sh 'npm ci'
                         sh 'npm test'
-                    }
-                    post {
-                        success {
-                            echo "✅ API funcional en Node 20"
-                        }
-                        failure {
-                            echo "❌ Falla detectada en Node 20"
-                        }
                     }
                 }
 
                 stage('Node 22') {
                     agent any
-                    tools {
-                        nodejs 'node22'
-                    }
+                    tools { nodejs 'node22' }
                     steps {
                         sh 'node -v'
                         sh 'npm ci'
                         sh 'npm test'
-                    }
-                    post {
-                        success {
-                            echo "✅ API funcional en Node 22"
-                        }
-                        failure {
-                            echo "❌ Falla detectada en Node 22"
-                        }
                     }
                 }
 
                 stage('Node 24') {
                     agent any
-                    tools {
-                        nodejs 'node24'
-                    }
+                    tools { nodejs 'node24' }
                     steps {
                         sh 'node -v'
                         sh 'npm ci'
                         sh 'npm test'
                     }
-                    post {
-                        success {
-                            echo "✅ API funcional en Node 24"
-                        }
-                        failure {
-                            echo "❌ Falla detectada en Node 24"
-                        }
-                    }
                 }
             }
+        }
+
+        stage('Análisis SonarQube') {
+            tools {
+                sonarQubeScanner 'Scanner 7.1.0' // nombre del scanner configurado en Jenkins Global Tool Configuration > SonarQube Scanner
+            }
+            steps {
+                withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                    sh """
+                        sonar-scanner \
+                        -Dsonar.projectKey=realestate-api \
+                        -Dsonar.projectName="RealEstate API" \
+                        -Dsonar.sources=src \
+                        -Dsonar.language=js \
+                        -Dsonar.sourceEncoding=UTF-8 \
+                        -Dsonar.login=${env.SONAR_TOKEN}
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "🎉 Pipeline completado correctamente"
+        }
+        failure {
+            echo "💥 El pipeline falló"
         }
     }
 }
