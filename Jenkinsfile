@@ -61,7 +61,8 @@ pipeline {
                         -Dsonar.sources=src \
                         -Dsonar.language=js \
                         -Dsonar.sourceEncoding=UTF-8 \
-                        -Dsonar.login=$SONAR_TOKEN
+                        -Dsonar.host.url=http://sonarqube:9000 \
+                        -Dsonar.login=$SONAR_TOKEN 
                     '''
                 }
             }
