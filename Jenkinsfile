@@ -52,9 +52,6 @@ pipeline {
         }
 
         stage('Análisis SonarQube') {
-            tools {
-                sonarQubeScanner 'Scanner 7.1.0' // nombre del scanner configurado en Jenkins Global Tool Configuration > SonarQube Scanner
-            }
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     sh """
