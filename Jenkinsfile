@@ -19,7 +19,7 @@ pipeline {
 		
         stage('DP Check') {
             steps {
-                dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
+                dependencyCheck additionalArguments: '--format HTML --nvdApiKey=975ff1b7-36f6-46cf-80c1-4b9f294ff88e', odcInstallation: 'DP-Check'
             }
             post {
                 always {
