@@ -54,7 +54,7 @@ pipeline {
         stage('Análisis SonarQube') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    sh """
+                    sh '''
                         sonar-scanner \
                         -Dsonar.projectKey=realestate-api \
                         -Dsonar.projectName="RealEstate API" \
@@ -62,7 +62,7 @@ pipeline {
                         -Dsonar.language=js \
                         -Dsonar.sourceEncoding=UTF-8 \
                         -Dsonar.login=$SONAR_TOKEN
-                    """
+                    '''
                 }
             }
         }
