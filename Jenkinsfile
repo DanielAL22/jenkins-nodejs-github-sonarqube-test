@@ -61,7 +61,7 @@ pipeline {
                         -Dsonar.sources=src \
                         -Dsonar.language=js \
                         -Dsonar.sourceEncoding=UTF-8 \
-                        -Dsonar.login=${env.SONAR_TOKEN}
+                        -Dsonar.login=$SONAR_TOKEN
                     """
                 }
             }
