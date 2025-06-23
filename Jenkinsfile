@@ -16,12 +16,6 @@ pipeline {
                 checkout scm // variable automática que representa la configuración del repositorio definida en la interfaz del job de Jenkins. clona el repositorio con base en esa configuración
             }
         }
-		
-		stage('DP Check') {
-			steps {
-				dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
-			}
-		}
 
 
         stage('Test en múltiples versiones Node.js') {
@@ -57,6 +51,12 @@ pipeline {
                 }
             }
         }
+
+        stage('DP Check') {
+			steps {
+				dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
+			}
+		}
 
         stage('Análisis SonarQube') {
             steps {
